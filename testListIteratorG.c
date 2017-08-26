@@ -16,6 +16,7 @@ void printIntList(IteratorG it);
 void printStringList(IteratorG it);
 void testSetAndDelete(IteratorG it, void *replace);
 void testAddAndDelete(IteratorG it, void *newValue);
+void testAdd(IteratorG it, void *newValues[], int length);
 
 int main(int argc, char *argv[])
 {
@@ -73,6 +74,10 @@ int main(int argc, char *argv[])
   int replace = 5;
   testSetAndDelete(it1, (void *)(&replace));
   testAddAndDelete(it1, (void *)(&replace));
+  int iList[5] = {4,3,5,1,-1};
+  void *piList[5] = {&iList[0],&iList[1],&iList[2],&iList[3],&iList[4]};
+  testAdd(it1, piList, 5);
+  printf("\n");
 
   /* =======================================
      --------- stringType List Iterator ----------
@@ -118,6 +123,10 @@ int main(int argc, char *argv[])
   printStringList(it2);
   testSetAndDelete(it2, (void *)"TheReplacement");
   testAddAndDelete(it2, (void *)"MoreTests");
+  char *sList[5] = {"Jack", "Jill", "Tommy", "Chuckie", "Chloe"};
+  void *psList[5] = {&sList[0],&sList[1],&sList[2],&sList[3],&sList[4]};
+  testAdd(it2, psList, 5);
+  printf("\n");
 
   return EXIT_SUCCESS; 
 }
@@ -188,21 +197,21 @@ void testSetAndDelete(IteratorG it, void *replace)
     // Replace/Set the first item
     // Attempt to replace without a direct precall to a neccessary function
     if (set(it, replace) != 0) {
-        printf("Test failed: Either set does not return appropriately or set executes when precondition not met\n");
+        printf("    Test FAILED: Either set does not return appropriately or set executes when precondition not met\n");
         exit(1);
     }
     next(it);
     if (set(it, replace) != 1) {
-        printf("Test failed: Unable to set value when precondition successfully met\n");
+        printf("    Test FAILED: Unable to set value when precondition successfully met\n");
         exit(1);
     }
     if (delete(it) != 0) {
-        printf("Test failed: Either delete does not return appropriately or delete executes when precondition not met\n");
+        printf("    Test FAILED: Either delete does not return appropriately or delete executes when precondition not met\n");
         exit(1);
     }
     previous(it);
     if (delete(it) != 1) {
-        printf("Test failed: Unablem to delete value when precondition successfully met\n");
+        printf("    Test FAILED: Unablem to delete value when precondition successfully met\n");
         exit(1);
     }
     printf("    Successfully ran Set and Delete tests\n");
@@ -234,7 +243,7 @@ void testAddAndDelete(IteratorG it, void *newValue)
     for (int i = 0; i < 3; i++) add(it, newValue);
     printf("    Successfully inserted into an empty list\n");
     if (hasNext(it) != 0) {
-        printf("Test failed: Cursor has not been set correctly after either add or delete\n");
+        printf("    Test FAILED: Cursor has not been set correctly after either add or delete\n");
         exit(1);   
     }
     printf("Deleting all items in the list from last backwards\n");
@@ -243,4 +252,37 @@ void testAddAndDelete(IteratorG it, void *newValue)
         delete(it);
     }
     printf("    Successfully ran Add and Delete tests\n");
+}
+
+// Tests add function at boundaries and average sitatuions
+// Should be given a valid empty list
+void testAdd(IteratorG it, void *newValues[], int length)
+{
+    if (length < 5) {
+        printf("Provide a bigger array for newValues\n");
+        exit(1);
+    }
+    // Add to an empty list
+    printf("Adding a few elements to an empty list\n");
+    add(it, newValues[0]);
+    add(it, newValues[1]);
+    add(it, newValues[2]);
+    printf("    Successfully added a few items to empty list\n");
+    reset(it);
+    printf("Adding to the front of moderate sized list\n");
+    add(it, newValues[3]);
+    printf("    Succesffully added to front of moderate list\n");
+    printf("Adding to the back of moderate sized list\n");
+    while (hasNext(it)) {
+        next(it);
+    }
+    add(it, newValues[4]);
+    printf("    Succesfully added to back of moderate list\n");
+    previous(it);
+    previous(it);
+    printf("Adding multiple items to middle of list\n");
+    for (int i = 0; i < length; i++) {
+        add(it, newValues[i]);
+    }
+    printf("    Succesfully added multiple items to middle of list\n");
 }
