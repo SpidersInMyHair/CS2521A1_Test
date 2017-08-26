@@ -15,6 +15,7 @@
 void printIntList(IteratorG it);
 void printStringList(IteratorG it);
 void testSetAndDelete(IteratorG it, void *replace);
+void testAddAndDelete(IteratorG it, void *newValue);
 
 int main(int argc, char *argv[])
 {
@@ -71,6 +72,8 @@ int main(int argc, char *argv[])
   printIntList(it1);
   int replace = 5;
   testSetAndDelete(it1, (void *)(&replace));
+  testAddAndDelete(it1, (void *)(&replace));
+
   /* =======================================
      --------- stringType List Iterator ----------
   */
@@ -114,10 +117,12 @@ int main(int argc, char *argv[])
   printf("\n");
   printStringList(it2);
   testSetAndDelete(it2, (void *)"TheReplacement");
+  testAddAndDelete(it2, (void *)"MoreTests");
 
   return EXIT_SUCCESS; 
 }
 
+// Prints the list both forwards and backwards (int type)
 void printIntList(IteratorG it)
 {
     printf("Resetting the cursor\n");
@@ -145,6 +150,7 @@ void printIntList(IteratorG it)
     }
 }
 
+// Prints the list both forwards and backwards (string type)
 void printStringList(IteratorG it)
 {
     printf("Resetting the cursor\n");
@@ -172,20 +178,69 @@ void printStringList(IteratorG it)
     }
 }
 
+// List should contain at least 1 item when starting this test
+// Tests appropriate calls to delete and set as well as the functionality of delete and set
 void testSetAndDelete(IteratorG it, void *replace)
 {
-    // List should contain at least 1 item when starting this test
     printf("Resetting the cursor\n");
     reset(it);
     printf("    Succesffully reset the cursor\n");
     // Replace/Set the first item
     // Attempt to replace without a direct precall to a neccessary function
-    if (set(it, replace) != 0) printf("Test failed: Either set does not return appropriately or set executes when precondition not met\n");
+    if (set(it, replace) != 0) {
+        printf("Test failed: Either set does not return appropriately or set executes when precondition not met\n");
+        exit(1);
+    }
     next(it);
-    if (set(it, replace) != 1) printf("Test failed: Unable to set value when precondition successfully met\n");
-    if (delete(it) != 0) printf("Test failed: Either delete does not return appropriately or delete executes when precondition not met\n");
+    if (set(it, replace) != 1) {
+        printf("Test failed: Unable to set value when precondition successfully met\n");
+        exit(1);
+    }
+    if (delete(it) != 0) {
+        printf("Test failed: Either delete does not return appropriately or delete executes when precondition not met\n");
+        exit(1);
+    }
     previous(it);
-    if (delete(it) != 1) printf("Test failed: Unablem to delete value when precondition successfully met\n");
+    if (delete(it) != 1) {
+        printf("Test failed: Unablem to delete value when precondition successfully met\n");
+        exit(1);
+    }
     printf("    Successfully ran Set and Delete tests\n");
 }
 
+// Deletes all items and attempts other breaks
+// Also tests add functions
+void testAddAndDelete(IteratorG it, void *newValue)
+{
+    printf("Resetting the cursor\n");
+    reset(it);
+    printf("    Successfully reset the cursor\n");
+    // Delete all items in the list from first onwards
+    printf("Deleting all items in list from first onwards\n");
+    while (hasNext(it)) {
+        next(it);
+        delete(it);   
+    }
+    printf("    Successfully deleted all items in the list\n");
+    // Attempt to delete from an empty list
+    printf("Attempting to delete from an empty list\n");
+    next(it);
+    delete(it);
+    previous(it);
+    delete(it);
+    printf("    Successfully avoided break on empty list delete call\n");
+    // Insert a few items
+    printf("Inserting three items into empty list\n");
+    for (int i = 0; i < 3; i++) add(it, newValue);
+    printf("    Successfully inserted into an empty list\n");
+    if (hasNext(it) != 0) {
+        printf("Test failed: Cursor has not been set correctly after either add or delete\n");
+        exit(1);   
+    }
+    printf("Deleting all items in the list from last backwards\n");
+    while (hasPrevious(it)) {
+        previous(it);
+        delete(it);
+    }
+    printf("    Successfully ran Add and Delete tests\n");
+}
