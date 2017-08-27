@@ -17,6 +17,7 @@ void printStringList(IteratorG it);
 void testSetAndDelete(IteratorG it, void *replace);
 void testAddAndDelete(IteratorG it, void *newValue);
 void testAdd(IteratorG it, void *newValues[], int length);
+void testFind(IteratorG it, void *values[], int length);
 
 int main(int argc, char *argv[])
 {
@@ -70,13 +71,16 @@ int main(int argc, char *argv[])
 
   // Own Tests Run Below //
   printf("\n");
-  printIntList(it1);
+  printIntList(it1);                            // List at this point: 25, 12, 6, 82, 11
   int replace = 5;
-  testSetAndDelete(it1, (void *)(&replace));
-  testAddAndDelete(it1, (void *)(&replace));
+  testSetAndDelete(it1, (void *)(&replace));    // List at this point: 12, 6, 82, 11
+  printIntList(it1);
+  testAddAndDelete(it1, (void *)(&replace));    
+  printIntList(it1);                            // List at this point: [Empty]
   int iList[5] = {4,3,5,1,-1};
   void *piList[5] = {&iList[0],&iList[1],&iList[2],&iList[3],&iList[4]};
-  testAdd(it1, piList, 5);
+  testAdd(it1, piList, 5);                      // List at this point: 1, 4, 3, 4, 3, 5, 1, -1, 5, -1
+  printIntList(it1);
   printf("\n");
 
   /* =======================================
@@ -120,12 +124,15 @@ int main(int argc, char *argv[])
  
   // Own Tests Run Below //
   printf("\n");
-  printStringList(it2);
+  printStringList(it2);                         // List at this point: John, Rita, John, Abby
   testSetAndDelete(it2, (void *)"TheReplacement");
+  printStringList(it2);                         // List at this point: Rita, John, Abby
   testAddAndDelete(it2, (void *)"MoreTests");
-  char *sList[5] = {"Jack", "Jill", "Tommy", "Chuckie", "Chloe"};
-  void *psList[5] = {&sList[0],&sList[1],&sList[2],&sList[3],&sList[4]};
+  printStringList(it2);                         // List at this point : [Empty]
+  char *c1 = "Jack"; char *c2 = "Jill"; char *c3 = "Tommy"; char *c4 = "Chuckie"; char *c5 = "Chloe";
+  void *psList[5] = {c1,c2,c3,c4,c5};
   testAdd(it2, psList, 5);
+  printStringList(it2);                         // List at this point: Chuckie, Jack, Jill, Jack, Jill, Tommy, Chuckie, Chloe, Tommy, Chloe
   printf("\n");
 
   return EXIT_SUCCESS; 
@@ -154,7 +161,7 @@ void printIntList(IteratorG it)
     }
     printf("\n");
     if (fcount != rcount) {
-        printf("    MISMATCH BETWEEEN FORWARD AND REVERSE ITERATION");
+        printf("    MISMATCH BETWEEEN FORWARD AND REVERSE ITERATION\n");
         exit(1);
     }
 }
@@ -182,7 +189,7 @@ void printStringList(IteratorG it)
     }
     printf("\n");
     if (fcount != rcount) {
-        printf("    MISMATCH BETWEEEN FORWARD AND REVERSE ITERATION");
+        printf("    MISMATCH BETWEEEN FORWARD AND REVERSE ITERATION\n");
         exit(1);
     }
 }
@@ -263,6 +270,7 @@ void testAdd(IteratorG it, void *newValues[], int length)
         exit(1);
     }
     // Add to an empty list
+    reset(it);
     printf("Adding a few elements to an empty list\n");
     add(it, newValues[0]);
     add(it, newValues[1]);
@@ -285,4 +293,21 @@ void testAdd(IteratorG it, void *newValues[], int length)
         add(it, newValues[i]);
     }
     printf("    Succesfully added multiple items to middle of list\n");
+}
+
+// Should ideally be run after the 'testAdd' function so specific values can be looked for
+void testFind(IteratorG it, void *values[], int length)
+{
+    if (length < 5) {
+        printf("Provides a bigger array for values\n");
+        exit(1);
+    }
+    reset(it);
+    printf("Attempting to find elements\n");
+    for (int i = 0; i < length; i++) {
+        if (findPrevious(it, values[i]) != NULL) {
+            printf("    Test FAILED: Found an item behind the theoretical list start\n");
+            exit(1);
+        }
+    }
 }
