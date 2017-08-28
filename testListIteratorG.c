@@ -81,6 +81,9 @@ int main(int argc, char *argv[])
   void *piList[5] = {&iList[0],&iList[1],&iList[2],&iList[3],&iList[4]};
   testAdd(it1, piList, 5);                      // List at this point: 1, 4, 3, 4, 3, 5, 1, -1, 5, -1
   printIntList(it1);
+  testFind(it1, piList, 5);
+  printIntList(it1);                             // List at this point: 1, 4, 3, 5, -1
+  free(it1);                                     // Assumed to have worked if program does not break since cannot manually check if specific memory allocated.                    
   printf("\n");
 
   /* =======================================
@@ -133,8 +136,11 @@ int main(int argc, char *argv[])
   void *psList[5] = {c1,c2,c3,c4,c5};
   testAdd(it2, psList, 5);
   printStringList(it2);                         // List at this point: Chuckie, Jack, Jill, Jack, Jill, Tommy, Chuckie, Chloe, Tommy, Chloe
+  testFind(it2, psList, 5);
+  printStringList(it2);                         // List at this point: Chuckie, Jack, Jill, Chloe, Tommy, Chloe
+  free(it2);
   printf("\n");
-
+                                               
   return EXIT_SUCCESS; 
 }
 
@@ -295,7 +301,7 @@ void testAdd(IteratorG it, void *newValues[], int length)
     printf("    Succesfully added multiple items to middle of list\n");
 }
 
-// Should ideally be run after the 'testAdd' function so specific values can be looked for
+// Should ideally be RUN AFTER the 'testAdd' function so specific values can be looked for
 void testFind(IteratorG it, void *values[], int length)
 {
     if (length < 5) {
@@ -310,4 +316,15 @@ void testFind(IteratorG it, void *values[], int length)
             exit(1);
         }
     }
+    findNext(it, values[3]);
+    findNext(it, values[3]);
+    delete(it);
+    findPrevious(it, values[2]);
+    delete(it);
+    findPrevious(it, values[0]);
+    delete(it);
+    findNext(it, values[1]);
+    delete(it);
+    findNext(it, values[4]);
+    delete(it);
 }
