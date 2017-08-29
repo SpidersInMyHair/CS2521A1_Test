@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
   testAdd(it2, psList, 5);
   printStringList(it2);                         // List at this point: Chuckie, Jack, Jill, Jack, Jill, Tommy, Chuckie, Chloe, Tommy, Chloe
   testFind(it2, psList, 5);
-  printStringList(it2);                         // List at this point: Chuckie, Jack, Jill, Chloe, Tommy, Chloe
+  printStringList(it2);                         // List at this point: Chuckie, Jack, Jill, Tommy, Chloe
   free(it2);
   printf("\n");
                                                
