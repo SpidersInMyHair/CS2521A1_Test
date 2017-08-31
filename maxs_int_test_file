@@ -196,7 +196,6 @@ int main(int argc, char *argv[])
   set(it3, &dig[3]);
   previous(it3);
   previous(it3);
-  previous(it3);
   set(it3,&dig[1]);
   findNext(it3, &dig[0]);
   set(it3,&dig[7]);
