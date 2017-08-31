@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
   findNext(it3, &dig[1]);
   set(it3, &dig[0]);
   printf("This next bit should fail: ");
-  printf("Return value = %d, should be 0\n", findNext(it3, &dig[1]));
+  findNext(it3, &dig[1];
   next(it3);
   next(it3);
   next(it3);
