@@ -2,6 +2,9 @@
 Test file for the GADT Implementation for CS2521A1 <br />
 All tests should only call functions from the listIteratorG.h file to ensure no other function dependencies.<br />
 
+The program at the very least relies on a good reset(), hasNext(), hasPrevious(), next(), previous() since these <br /> 
+functions are used to print a visualisation of the current list.
+
 Added a test program that lets you call functions step by step and also see the list at any step:<br />
   Commands that it takes:<br />
         printf("\n");<br />
