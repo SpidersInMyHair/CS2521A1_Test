@@ -32,6 +32,8 @@ int main(int argc, char *argv[])
 
   IteratorG it1 = IteratorGNew(positiveIntCompare, positiveIntNew, positiveIntFree);
 
+  printf("Cursor DLL Interface\n");
+  printf("Type 'help' or '?' to see commands.\n\n"); 
   while (strcmp(user_str, "quit\n") != 0) {
     printf("> ");
     fgets(user_str, 6, stdin);
