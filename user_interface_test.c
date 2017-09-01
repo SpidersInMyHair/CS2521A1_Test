@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
   IteratorG it1 = IteratorGNew(positiveIntCompare, positiveIntNew, positiveIntFree);
 
   while (strcmp(user_str, "quit\n") != 0) {
+    printf("> ");
     fgets(user_str, 6, stdin);
     if (strcmp(user_str, "help\n") == 0) {
         printf("\n");
