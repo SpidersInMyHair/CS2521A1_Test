@@ -13,6 +13,7 @@
 #define MAXARRAY 5
 #define MAXINPUT 6
 
+int last_move = 0;
 void printList(IteratorG it);
 
 int main(int argc, char *argv[])
@@ -38,7 +39,6 @@ int main(int argc, char *argv[])
         printf("\n");
         printf("Required arguments written as $arg. '$' sign not required.\n");
         printf("Note: Does not make exceptions for bad input. Will lead to odd behaviour\n");
-        printf("Note: Last examined value reset after printing list\n");
         printf("ONLY takes in ONE LETTERED arguments.\n");
         printf("Commands: \n");
         printf("    !           will print the list\n");
@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     if (user_str[0] == '+') {
         int value = atoi(&user_str[2]);
         add(it1, (void *)(&value));
+        last_move = 0;
     }
     if (user_str[0] == '$') {
         int value = atoi(&user_str[2]);
@@ -71,40 +72,55 @@ int main(int argc, char *argv[])
     }
     if (user_str[0] == '-') {
         delete(it1);
+        last_move = 0;
     }
     if (user_str[0] == 'r') {
         reset(it1);
+        last_move = 0;
     }
     if (user_str[0] == 'f') {
         freeIt(it1);
+        last_move = 0;
     }
     if (user_str[0] == 'a') {
         printf("Has prev: %s", hasPrevious(it1) == 1 ? "True\n" : "False\n");
+        last_move = 0;
     }
     if (user_str[0] == 'd') {
         printf("Has next: %s", hasNext(it1) == 1 ? "True\n" : "False\n");
+        last_move = 0;
     }
     if (user_str[0] == 'n') {
         int value = atoi(&user_str[2]);
         printf("Find next: %s", findNext(it1, (void *)(&value)) != NULL ? "Found\n" : "Not found\n");
+        last_move = 1;  // Only if succ
     }
     if (user_str[0] == 'p') {
         int value = atoi(&user_str[2]);
         printf("Find prev: %s", findPrevious(it1, (void *)(&value)) != NULL ? "Found\n" : "Not found\n");
+        last_move = -1;
     }
     if (user_str[0] == '<') {
         void *tmp = previous(it1);
         if (tmp == NULL) {
             printf("Prev is NULL\n");
+            last_move = 0;
         }
-        else printf("Prev is: %d\n", *(int *)tmp);
+        else {
+            printf("Prev is: %d\n", *(int *)tmp);
+            last_move = -1;
+        }
     }
     if (user_str[0] == '>') {
         void *tmp = next(it1);
         if (tmp == NULL) {
             printf("Next is NULL\n");
+            last_move = 0;
         }
-        else printf("Next is: %d\n", *(int *)tmp);
+        else {  
+            printf("Next is: %d\n", *(int *)tmp);
+            last_move = 1;
+        }
     }   
   }
 
@@ -137,4 +153,12 @@ void printList(IteratorG it)
         previous(it);
     }
     hasNext(it);
+    if (last_move == -1) {
+        next(it);
+        previous(it);
+    }
+    if (last_move == 1) {
+        previous(it);
+        next(it);
+    }
 }
