@@ -10,7 +10,7 @@ Added a test program that lets you call functions step by step and also see the 
         printf("\n");<br />
         printf("Required arguments written as $arg. '$' sign not required.\n");<br />
         printf("Note: Does not make exceptions for bad input. Will lead to odd behaviour\n");<br />
-        printf("Note: Last examined value reset after printing list\n");<br />
+        printf("Note: Printing list should have no impact on list properties as they are restored\n");<br />
         printf("ONLY takes in ONE LETTERED arguments.\n");<br />
         printf("Commands: \n");<br />
         printf("    !           will print the list\n");<br />
