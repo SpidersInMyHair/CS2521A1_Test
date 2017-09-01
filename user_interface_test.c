@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     if (user_str[0] == '$') {
         int value = atoi(&user_str[2]);
         set(it1, (void *)(&value));
+        last_move = 0;
     }
     if (user_str[0] == '-') {
         delete(it1);
