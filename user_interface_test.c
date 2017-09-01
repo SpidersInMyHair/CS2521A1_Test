@@ -14,6 +14,7 @@
 #define MAXINPUT 6
 
 int last_move = 0;
+void pretest(IteratorG it);
 void printList(IteratorG it);
 
 int main(int argc, char *argv[])
@@ -31,6 +32,8 @@ int main(int argc, char *argv[])
   user_str[5] = '\0';
 
   IteratorG it1 = IteratorGNew(positiveIntCompare, positiveIntNew, positiveIntFree);
+  IteratorG it0 = IteratorGNew(positiveIntCompare, positiveIntNew, positiveIntFree);
+  pretest(it0);
 
   printf("Cursor DLL Interface\n");
   printf("Type 'help' or '?' to see commands.\n\n"); 
@@ -83,6 +86,8 @@ int main(int argc, char *argv[])
     if (user_str[0] == 'f') {
         freeIt(it1);
         last_move = 0;
+        it1 = IteratorGNew(positiveIntCompare, positiveIntNew, positiveIntFree);
+        printf("Note: free cannot be tested here.\n");
     }
     if (user_str[0] == 'a') {
         printf("Has prev: %s", hasPrevious(it1) == 1 ? "True\n" : "False\n");
@@ -94,13 +99,25 @@ int main(int argc, char *argv[])
     }
     if (user_str[0] == 'n') {
         int value = atoi(&user_str[2]);
-        printf("Find next: %s", findNext(it1, (void *)(&value)) != NULL ? "Found\n" : "Not found\n");
-        last_move = 1;  // Only if succ
+        void *vp = findNext(it1, (void *)(&value));
+        if (vp != NULL) {
+	    last_move = 1;
+	    printf("Find next: Found\n");
+        } else {
+	    last_move = 0;
+            printf("Find next: Not found\n");
+        }
     }
     if (user_str[0] == 'p') {
         int value = atoi(&user_str[2]);
-        printf("Find prev: %s", findPrevious(it1, (void *)(&value)) != NULL ? "Found\n" : "Not found\n");
-        last_move = -1;
+        void *vp = findPrevious(it1, (void *)(&value));
+	if (vp != NULL) {
+	    last_move = -1;
+	    printf("Find previous: Found\n");
+        } else {
+	    last_move = 0;
+	    printf("Find previous: Not found\n");
+	}
     }
     if (user_str[0] == '<') {
         void *tmp = previous(it1);
@@ -129,6 +146,9 @@ int main(int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 
+// Prints the DLL including the cursor position. Since printing the list requires use of the cursor
+// and other ADT functions - more lines have been added so that the list is 'restored' to its absolute
+// previous position, acting as though the list was never intefered with.
 void printList(IteratorG it)
 {
     assert(it != NULL);
@@ -163,4 +183,28 @@ void printList(IteratorG it)
         previous(it);
         next(it);
     }
+}
+
+// A few preliminary tests to ensure that functions required to print the list are at least 
+// okay in their basic functioning.
+void pretest(IteratorG it)
+{
+    int a = 1;
+    add(it, (void *)(&a));
+    if (hasNext(it) != 0 || next(it) != NULL) {
+        fprintf(stderr, "Has next function or next function not working as intended.\n");
+        exit(1);
+    }
+    if (hasPrevious(it) == 0 || previous(it) == NULL) {
+        fprintf(stderr, "Has previous function or previous function not working as intended.\n");
+	exit(1);
+    }
+    if (hasPrevious(it) != 0 || previous(it) != NULL) {
+	fprintf(stderr, "Has previous function or previous function not working as intended.\n");
+	exit(1);
+    }
+    if (hasNext(it) == 0 || next(it) == NULL) {
+	fprintf(stderr, "Has next function or next function not working as intended.\n");
+    }
+    printf("Preliminary tests passed.\n");
 }
